@@ -3,7 +3,7 @@
 > **Tenant-isolated credential brokering, deny-by-default capabilities, and typed audit sanitization for AI agents.**
 
 > [!WARNING]
-> ### EXPERIMENTAL PRE-RELEASE ALPHA (`v0.1.0a1`)
+> ### EXPERIMENTAL PRE-RELEASE ALPHA (`v0.1.0a2`)
 > **AgentGuardKit is currently an experimental proof-of-concept release.**
 > 
 > - **NOT Independently Security Audited**: This codebase has undergone internal automated testing and architectural review, but has **NOT** yet been audited by an independent third-party application security firm.
@@ -56,13 +56,16 @@ AgentGuardKit is a lightweight, embeddable Python security library that introduc
 ## Installation
 
 ```bash
-# Pre-release installation from source
+# Direct installation from PyPI
+pip install agentguardkit-sdk
+
+# Or installation from source
 git clone https://github.com/techmsd/agent-guard-kit.git
 cd agent-guard-kit
 pip install -e .
 ```
 
-*(Note: Package release is pending community review and independent verification. The package name `agent-guard-kit` is currently unreleased and available on PyPI.)*
+*(Note: The official distribution package name on PyPI is `agentguardkit-sdk`. The Python import namespace remains `agentguardkit`.)*
 
 ---
 
@@ -168,7 +171,7 @@ print(clean)
 
 ## Implemented vs. Future Roadmap
 
-| Capability | Status in v0.1.0a1 | Notes |
+| Capability | Status in v0.1.0a2 | Notes |
 | :--- | :--- | :--- |
 | **Tenant Path Derivation** | **Implemented & Tested** | Canonical hierarchical validation (`^[a-zA-Z0-9_-]+$`) |
 | **Tenant Authorization Context** | **Implemented & Tested** | Explicit `AuthorizationContext` scope binding fail-closed |

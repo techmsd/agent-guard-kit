@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agent-guard-kit"
-version = "0.1.0a1"
+name = "agentguardkit-sdk"
+version = "0.1.0a2"
 description = "Tenant-isolated credential brokering, deny-by-default capabilities, and typed audit sanitization for AI agents."
 readme = "README.md"
 license = "Apache-2.0"
