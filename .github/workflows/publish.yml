@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,36 +42,67 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Validate Release Inputs & Version Tag
+      - name: Validate Release Inputs & Tagged Commit
+        env:
+          CONFIRM_RELEASE: ${{ github.event.inputs.confirm_release }}
+          INPUT_TAG: ${{ github.event.inputs.version_tag }}
+          INPUT_TARGET: ${{ github.event.inputs.target }}
         run: |
           # 1. Validate confirmation keyword
-          if [ "${{ github.event.inputs.confirm_release }}" != "CONFIRM_RELEASE" ]; then
-            echo "ERROR: Confirmation keyword does not match 'CONFIRM_RELEASE'."
+          if [ "${CONFIRM_RELEASE}" != "CONFIRM_RELEASE" ]; then
+            echo "ERROR: Confirmation keyword does not match 'CONFIRM_RELEASE'." >&2
             exit 1
           fi
 
-          # 2. Extract version from pyproject.toml
+          # 2. Extract canonical version from pyproject.toml on main
           PROJECT_VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
           EXPECTED_TAG="v${PROJECT_VERSION}"
-          INPUT_TAG="${{ github.event.inputs.version_tag }}"
 
           echo "pyproject.toml version: ${PROJECT_VERSION}"
           echo "Expected tag: ${EXPECTED_TAG}"
           echo "Provided tag: ${INPUT_TAG}"
 
-          # 3. Verify tag matches pyproject.toml exactly
+          # 3. Verify tag matches pyproject.toml version exactly
           if [ "${INPUT_TAG}" != "${EXPECTED_TAG}" ]; then
-            echo "ERROR: Provided version tag '${INPUT_TAG}' does not match pyproject.toml version '${EXPECTED_TAG}'."
+            echo "ERROR: Provided version tag '${INPUT_TAG}' does not match pyproject.toml version '${EXPECTED_TAG}'." >&2
             exit 1
           fi
 
           # 4. Verify tag adheres to approved semver release pattern
           if ! [[ "${INPUT_TAG}" =~ ^v0\.[0-9]+\.[0-9]+(a[0-9]+|b[0-9]+|rc[0-9]+)?$ ]]; then
-            echo "ERROR: Tag '${INPUT_TAG}' is not an authorized semver release pattern."
+            echo "ERROR: Tag '${INPUT_TAG}' is not an authorized semver release pattern." >&2
             exit 1
           fi
 
-          echo "Release inputs and version tag validated successfully."
+          # 5. Fetch all remote tags and origin/main to ensure accurate ref verification
+          git fetch origin main --tags
+
+          # 6. Verify that the release tag actually exists in the repository
+          if ! git rev-parse -q --verify "refs/tags/${INPUT_TAG}" >/dev/null; then
+            echo "ERROR: Release tag '${INPUT_TAG}' does not exist in repository." >&2
+            exit 1
+          fi
+
+          # 7. Verify that the tag resolves to the approved main commit
+          TAG_COMMIT=$(git rev-parse "refs/tags/${INPUT_TAG}^{commit}")
+          MAIN_COMMIT=$(git rev-parse "refs/remotes/origin/main^{commit}")
+
+          echo "Tag commit:  ${TAG_COMMIT}"
+          echo "Main commit: ${MAIN_COMMIT}"
+
+          if [ "${TAG_COMMIT}" != "${MAIN_COMMIT}" ]; then
+            echo "ERROR: Tag '${INPUT_TAG}' (${TAG_COMMIT}) does not resolve to approved main commit (${MAIN_COMMIT})." >&2
+            exit 1
+          fi
+
+          echo "Release inputs, tag existence, and commit alignment verified successfully."
+
+      - name: Checkout Verified Tagged Commit
+        env:
+          INPUT_TAG: ${{ github.event.inputs.version_tag }}
+        run: |
+          git checkout "${INPUT_TAG}"
+          echo "Checked out verified tag commit: $(git rev-parse HEAD)"
 
       - name: Install package and consistent dev dependencies
         run: |
