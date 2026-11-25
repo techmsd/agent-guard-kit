@@ -1,7 +1,7 @@
 # Security Policy
 
 > [!WARNING]
-> ### Experimental Alpha Security Notice (`v0.1.0a1`)
+> ### Experimental Alpha Security Notice (`v0.1.0a2`)
 > **AgentGuardKit is an experimental pre-release alpha.**
 > - **No Independent Security Audit**: This software has **NOT** undergone an independent external security audit.
 > - **In-Process Boundary**: AgentGuardKit operates in host process memory; it is not an OS sandbox, hypervisor, or network proxy.

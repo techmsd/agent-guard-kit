@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.0a2] - 2026-11-25
+
+> **Experimental Alpha** — Updated distribution package name for PyPI.
+
+### Changed
+- **PyPI Distribution Package Name**: Updated package name from `agent-guard-kit` to `agentguardkit-sdk` in `pyproject.toml` due to similarity collision with an existing project on PyPI.
+- **Brand & Import Namespace**: Retained the `AgentGuardKit` brand identity, GitHub repository (`techmsd/agent-guard-kit`), and standard Python import namespace (`import agentguardkit`).
+- **Publishing & Documentation**: Updated distribution URLs in `.github/workflows/publish.yml`, `README.md`, and security references for `v0.1.0a2`.
+
+---
+
 ## [0.1.0a1] - 2026-11-25
 
 > **Experimental Alpha** — Public API may change before the stable 0.1.0 release.
