@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.1.0a2"
+__version__ = "0.1.0a3"
 
 from .audit.sanitizer import AuditSanitizer, scrub_string
 from .broker import CredentialBroker

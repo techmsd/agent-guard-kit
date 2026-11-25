@@ -12,7 +12,7 @@ on:
           - testpypi
           - pypi
       version_tag:
-        description: 'Release version tag matching pyproject.toml (e.g. v0.1.0a2)'
+        description: 'Release version tag matching pyproject.toml (e.g. v0.1.0a3)'
         required: true
         type: string
       confirm_release:
@@ -180,7 +180,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi-test
-      url: https://test.pypi.org/p/agentguardkit-sdk
+      url: https://test.pypi.org/p/agent-guard-kit-sdk
     permissions:
       id-token: write  # OIDC token permission for TestPyPI trusted publishing
 
@@ -207,7 +207,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi-production
-      url: https://pypi.org/p/agentguardkit-sdk
+      url: https://pypi.org/p/agent-guard-kit-sdk
     permissions:
       id-token: write  # OIDC token permission for Production PyPI trusted publishing
 
